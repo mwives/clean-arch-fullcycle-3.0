@@ -1,7 +1,9 @@
+import { Address } from './address'
+
 class Customer {
   _id: string
   _name: string
-  _address = ''
+  _address!: Address
   _active = false
 
   constructor(id: string, name: string) {
@@ -35,5 +37,9 @@ class Customer {
 
   deactivate() {
     this._active = false
+  }
+
+  set Address(address: Address) {
+    this._address = address
   }
 }
