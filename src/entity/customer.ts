@@ -1,15 +1,19 @@
 import { Address } from './address'
 
 export class Customer {
-  _id: string
-  _name: string
-  _address!: Address
-  _active = false
+  private _id: string
+  private _name: string
+  private _address!: Address
+  private _active = false
 
   constructor(id: string, name: string) {
     this._id = id
     this._name = name
     this.validate()
+  }
+
+  get name() {
+    return this._name
   }
 
   // Entities should always self-validate
@@ -25,6 +29,10 @@ export class Customer {
   changeName(name: string) {
     this._name = name
     this.validate() // Guarantee that a customer always has a name
+  }
+
+  isActive(): boolean {
+    return this._active
   }
 
   activate() {
