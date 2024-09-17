@@ -16,11 +16,11 @@ describe('Order', () => {
 
   it('should calculate total', () => {
     const items = [
-      new OrderItem('123', 'Product 1', 10),
-      new OrderItem('456', 'Product 2', 20),
-      new OrderItem('789', 'Product 3', 30),
+      new OrderItem('123', 'p1', 'Product 1', 10, 1),
+      new OrderItem('456', 'p2', 'Product 2', 20, 2),
+      new OrderItem('789', 'p3', 'Product 3', 30, 3),
     ]
     const order = new Order('123', '123', items)
-    expect(order.total()).toBe(60)
+    expect(order.total()).toBe(140)
   })
 })
