@@ -14,6 +14,9 @@ import { ProductRepository } from './product.repository'
 
 describe('OrderRepository', () => {
   let sequelize: Sequelize
+  let customerRepository: CustomerRepository
+  let productRepository: ProductRepository
+  let orderRepository: OrderRepository
 
   beforeEach(async () => {
     sequelize = new Sequelize({
@@ -30,22 +33,43 @@ describe('OrderRepository', () => {
       ProductModel,
     ])
     await sequelize.sync()
+
+    customerRepository = new CustomerRepository()
+    productRepository = new ProductRepository()
+    orderRepository = new OrderRepository()
   })
 
   afterEach(async () => {
     await sequelize.close()
   })
 
-  it('should create a new order', async () => {
-    const customerRepository = new CustomerRepository()
+  async function createCostumer(): Promise<Customer> {
     const customer = new Customer('123', 'Customer 1')
     const address = new Address('Main St', 1, '12345', 'Springfield')
     customer.changeAddress(address)
     await customerRepository.create(customer)
+    return customer
+  }
 
-    const productRepository = new ProductRepository()
-    const product = new Product('123', 'Product 1', 10)
+  async function createProduct(id: string): Promise<Product> {
+    const product = new Product(id, `Product ${id}}`, 10)
     await productRepository.create(product)
+    return product
+  }
+
+  async function createOrder(
+    id: string,
+    customerId: string,
+    orderItems: OrderItem[]
+  ): Promise<Order> {
+    const order = new Order(id, customerId, orderItems)
+    await orderRepository.create(order)
+    return order
+  }
+
+  it('should create a new order', async () => {
+    const customer = await createCostumer()
+    const product = await createProduct('123')
 
     const orderItem = new OrderItem(
       '1',
@@ -55,10 +79,7 @@ describe('OrderRepository', () => {
       2
     )
 
-    const order = new Order('123', customer.id, [orderItem])
-
-    const orderRepository = new OrderRepository()
-    await orderRepository.create(order)
+    const order = await createOrder('123', customer.id, [orderItem])
 
     const orderModel = await OrderModel.findOne({
       where: { id: order.id },
@@ -83,24 +104,14 @@ describe('OrderRepository', () => {
   })
 
   it('should find an order by ID', async () => {
-    const customerRepository = new CustomerRepository()
-    const customer = new Customer('123', 'Customer 1')
-    const address = new Address('Main St', 1, '12345', 'Springfield')
-    customer.changeAddress(address)
-    await customerRepository.create(customer)
-
-    const productRepository = new ProductRepository()
-    const product = new Product('123', 'Product 1', 10)
-    await productRepository.create(product)
+    const customer = await createCostumer()
+    const product = await createProduct('123')
 
     const orderItems = [
       new OrderItem('1', product.id, product.name, product.price, 2),
       new OrderItem('2', product.id, product.name, product.price, 10),
     ]
-    const order = new Order('123', customer.id, orderItems)
-
-    const orderRepository = new OrderRepository()
-    await orderRepository.create(order)
+    const order = await createOrder('123', customer.id, orderItems)
 
     const orderResult = await orderRepository.findById(order.id)
 
@@ -108,22 +119,14 @@ describe('OrderRepository', () => {
   })
 
   it('should throw an error when order is not found', async () => {
-    const orderRepository = new OrderRepository()
     await expect(orderRepository.findById('123')).rejects.toThrow(
       'Order not found'
     )
   })
 
   it('should find all orders', async () => {
-    const customerRepository = new CustomerRepository()
-    const customer = new Customer('123', 'Customer 1')
-    const address = new Address('Main St', 1, '12345', 'Springfield')
-    customer.changeAddress(address)
-    await customerRepository.create(customer)
-
-    const productRepository = new ProductRepository()
-    const product = new Product('123', 'Product 1', 10)
-    await productRepository.create(product)
+    const customer = await createCostumer()
+    const product = await createProduct('123')
 
     const orderItem1 = new OrderItem(
       '1',
@@ -139,12 +142,8 @@ describe('OrderRepository', () => {
       product.price,
       10
     )
-    const order1 = new Order('123', customer.id, [orderItem1])
-    const order2 = new Order('124', customer.id, [orderItem2])
-
-    const orderRepository = new OrderRepository()
-    await orderRepository.create(order1)
-    await orderRepository.create(order2)
+    const order1 = await createOrder('123', customer.id, [orderItem1])
+    const order2 = await createOrder('124', customer.id, [orderItem2])
 
     const orders = await orderRepository.findAll()
 
@@ -154,15 +153,8 @@ describe('OrderRepository', () => {
   })
 
   it('should update an order', async () => {
-    const customerRepository = new CustomerRepository()
-    const customer = new Customer('123', 'Customer 1')
-    const address = new Address('Main St', 1, '12345', 'Springfield')
-    customer.changeAddress(address)
-    await customerRepository.create(customer)
-
-    const productRepository = new ProductRepository()
-    const product = new Product('123', 'Product 1', 10)
-    await productRepository.create(product)
+    const customer = await createCostumer()
+    const product = await createProduct('123')
 
     const orderItem1 = new OrderItem(
       '1',
@@ -179,10 +171,10 @@ describe('OrderRepository', () => {
       10
     )
 
-    const orderRepository = new OrderRepository()
-
-    const order = new Order('123', customer.id, [orderItem1, orderItem2])
-    await orderRepository.create(order)
+    const order = await createOrder('123', customer.id, [
+      orderItem1,
+      orderItem2,
+    ])
 
     // Make changes in the order
     order.removeItem(orderItem1.id)
