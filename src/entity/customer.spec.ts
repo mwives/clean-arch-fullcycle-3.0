@@ -36,4 +36,16 @@ describe('Customer', () => {
     customer.deactivate()
     expect(customer.isActive()).toBe(false)
   })
+
+  it('should add reward points', () => {
+    const customer = new Customer('123', 'John Doe')
+
+    expect(customer.rewardPoints).toBe(0)
+
+    customer.addRewardPoints(100)
+    expect(customer.rewardPoints).toBe(100)
+
+    customer.addRewardPoints(50)
+    expect(customer.rewardPoints).toBe(150)
+  })
 })

@@ -4,6 +4,7 @@ export class Customer {
   private _id: string
   private _name: string
   private _address!: Address
+  private _rewardPoints = 0
   private _active = false
 
   constructor(id: string, name: string) {
@@ -12,8 +13,16 @@ export class Customer {
     this.validate()
   }
 
+  get id() {
+    return this._id
+  }
+
   get name() {
     return this._name
+  }
+
+  get rewardPoints() {
+    return this._rewardPoints
   }
 
   // Entities should always self-validate
@@ -29,6 +38,10 @@ export class Customer {
   changeName(name: string) {
     this._name = name
     this.validate() // Guarantee that a customer always has a name
+  }
+
+  addRewardPoints(points: number) {
+    this._rewardPoints += points
   }
 
   isActive(): boolean {
