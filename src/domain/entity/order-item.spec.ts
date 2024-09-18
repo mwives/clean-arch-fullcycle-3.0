@@ -1,4 +1,4 @@
-import { OrderItem } from './order_item'
+import { OrderItem } from './order-item'
 
 describe('OrderItem', () => {
   it('should throw error when creating an order item without ID', () => {
