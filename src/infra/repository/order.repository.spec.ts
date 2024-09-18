@@ -43,7 +43,7 @@ describe('OrderRepository', () => {
     await sequelize.close()
   })
 
-  async function createCostumer(): Promise<Customer> {
+  async function createCustomer(): Promise<Customer> {
     const customer = new Customer('123', 'Customer 1')
     const address = new Address('Main St', 1, '12345', 'Springfield')
     customer.changeAddress(address)
@@ -68,7 +68,7 @@ describe('OrderRepository', () => {
   }
 
   it('should create a new order', async () => {
-    const customer = await createCostumer()
+    const customer = await createCustomer()
     const product = await createProduct('123')
 
     const orderItem = new OrderItem(
@@ -104,7 +104,7 @@ describe('OrderRepository', () => {
   })
 
   it('should find an order by ID', async () => {
-    const customer = await createCostumer()
+    const customer = await createCustomer()
     const product = await createProduct('123')
 
     const orderItems = [
@@ -125,7 +125,7 @@ describe('OrderRepository', () => {
   })
 
   it('should find all orders', async () => {
-    const customer = await createCostumer()
+    const customer = await createCustomer()
     const product = await createProduct('123')
 
     const orderItem1 = new OrderItem(
@@ -152,65 +152,208 @@ describe('OrderRepository', () => {
     expect(orders).toContainEqual(order2)
   })
 
-  it('should update an order', async () => {
-    const customer = await createCostumer()
-    const product = await createProduct('123')
+  // it('should update an order', async () => {
+  //   const customer = await createCostumer()
+  //   const product = await createProduct('123')
 
-    const orderItem1 = new OrderItem(
-      '1',
-      product.id,
-      product.name,
-      product.price,
-      2
-    )
-    const orderItem2 = new OrderItem(
-      '2',
-      product.id,
-      product.name,
-      product.price,
-      10
-    )
+  //   const orderItem1 = new OrderItem(
+  //     '1',
+  //     product.id,
+  //     product.name,
+  //     product.price,
+  //     2
+  //   )
+  //   const orderItem2 = new OrderItem(
+  //     '2',
+  //     product.id,
+  //     product.name,
+  //     product.price,
+  //     10
+  //   )
 
-    const order = await createOrder('123', customer.id, [
-      orderItem1,
-      orderItem2,
-    ])
+  //   const order = await createOrder('123', customer.id, [
+  //     orderItem1,
+  //     orderItem2,
+  //   ])
 
-    // Make changes in the order
-    order.removeItem(orderItem1.id)
-    order.addItem(
-      new OrderItem('3', product.id, product.name, product.price, 30)
-    )
-    orderItem2.changeQuantity(5)
-    await orderRepository.update(order)
+  //   // Make changes in the order
+  //   order.removeItem(orderItem1.id)
+  //   order.addItem(
+  //     new OrderItem('3', product.id, product.name, product.price, 30)
+  //   )
+  //   orderItem2.changeQuantity(5)
+  //   await orderRepository.update(order)
 
-    const orderModel = await OrderModel.findOne({
-      where: { id: order.id },
-      include: ['items'],
+  //   const orderModel = await OrderModel.findOne({
+  //     where: { id: order.id },
+  //     include: ['items'],
+  //   })
+
+  //   expect(orderModel.toJSON()).toStrictEqual({
+  //     id: '123',
+  //     customer_id: '123',
+  //     total: order.total(),
+  //     items: [
+  //       {
+  //         id: orderItem2.id,
+  //         name: orderItem2.name,
+  //         price: orderItem2.price,
+  //         quantity: orderItem2.quantity,
+  //         order_id: '123',
+  //         product_id: '123',
+  //       },
+  //       {
+  //         id: '3',
+  //         name: product.name,
+  //         price: product.price,
+  //         quantity: 30,
+  //         order_id: '123',
+  //         product_id: '123',
+  //       },
+  //     ],
+  //   })
+  // })
+  describe('update', () => {
+    it('should update an order by removing an item', async () => {
+      const customer = await createCustomer()
+      const product = await createProduct('123')
+
+      const orderItem1 = new OrderItem(
+        '1',
+        product.id,
+        product.name,
+        product.price,
+        2
+      )
+      const orderItem2 = new OrderItem(
+        '2',
+        product.id,
+        product.name,
+        product.price,
+        10
+      )
+      const order = await createOrder('123', customer.id, [
+        orderItem1,
+        orderItem2,
+      ])
+
+      // Remove an item
+      order.removeItem(orderItem1.id)
+      await orderRepository.update(order)
+
+      const orderModel = await OrderModel.findOne({
+        where: { id: order.id },
+        include: ['items'],
+      })
+
+      expect(orderModel.toJSON()).toStrictEqual({
+        id: '123',
+        customer_id: '123',
+        total: order.total(),
+        items: [
+          {
+            id: orderItem2.id,
+            name: orderItem2.name,
+            price: orderItem2.price,
+            quantity: orderItem2.quantity,
+            order_id: '123',
+            product_id: '123',
+          },
+        ],
+      })
     })
 
-    expect(orderModel.toJSON()).toStrictEqual({
-      id: '123',
-      customer_id: '123',
-      total: order.total(),
-      items: [
-        {
-          id: orderItem2.id,
-          name: orderItem2.name,
-          price: orderItem2.price,
-          quantity: orderItem2.quantity,
-          order_id: '123',
-          product_id: '123',
-        },
-        {
-          id: '3',
-          name: product.name,
-          price: product.price,
-          quantity: 30,
-          order_id: '123',
-          product_id: '123',
-        },
-      ],
+    it('should update an order by adding an item', async () => {
+      const customer = await createCustomer()
+      const product = await createProduct('123')
+
+      const orderItem1 = new OrderItem(
+        '1',
+        product.id,
+        product.name,
+        product.price,
+        2
+      )
+      const orderItem2 = new OrderItem(
+        '2',
+        product.id,
+        product.name,
+        product.price,
+        10
+      )
+      const order = await createOrder('123', customer.id, [orderItem1])
+
+      // Add a new item
+      order.addItem(orderItem2)
+      await orderRepository.update(order)
+
+      const orderModel = await OrderModel.findOne({
+        where: { id: order.id },
+        include: ['items'],
+      })
+
+      expect(orderModel.toJSON()).toStrictEqual({
+        id: '123',
+        customer_id: '123',
+        total: order.total(),
+        items: [
+          {
+            id: orderItem1.id,
+            name: orderItem1.name,
+            price: orderItem1.price,
+            quantity: orderItem1.quantity,
+            order_id: '123',
+            product_id: '123',
+          },
+          {
+            id: orderItem2.id,
+            name: orderItem2.name,
+            price: orderItem2.price,
+            quantity: orderItem2.quantity,
+            order_id: '123',
+            product_id: '123',
+          },
+        ],
+      })
+    })
+
+    it('should update the quantity of an item', async () => {
+      const customer = await createCustomer()
+      const product = await createProduct('123')
+
+      const orderItem1 = new OrderItem(
+        '1',
+        product.id,
+        product.name,
+        product.price,
+        2
+      )
+      const order = await createOrder('123', customer.id, [orderItem1])
+
+      // Change the quantity of an item
+      orderItem1.changeQuantity(5)
+      await orderRepository.update(order)
+
+      const orderModel = await OrderModel.findOne({
+        where: { id: order.id },
+        include: ['items'],
+      })
+
+      expect(orderModel.toJSON()).toStrictEqual({
+        id: '123',
+        customer_id: '123',
+        total: order.total(),
+        items: [
+          {
+            id: orderItem1.id,
+            name: orderItem1.name,
+            price: orderItem1.price,
+            quantity: orderItem1.quantity,
+            order_id: '123',
+            product_id: '123',
+          },
+        ],
+      })
     })
   })
 })
