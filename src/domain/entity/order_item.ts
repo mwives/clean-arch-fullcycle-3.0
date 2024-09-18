@@ -20,15 +20,27 @@ export class OrderItem {
     this.validate()
   }
 
-  get price() {
+  get id(): string {
+    return this._id
+  }
+
+  get productId(): string {
+    return this._productId
+  }
+
+  get name(): string {
+    return this._name
+  }
+
+  get price(): number {
     return this._price
   }
 
-  get quantity() {
+  get quantity(): number {
     return this._quantity
   }
 
-  validate() {
+  validate(): void {
     if (!this._id) {
       throw new Error('ID is required')
     }
@@ -46,7 +58,7 @@ export class OrderItem {
     }
   }
 
-  orderItemTotal() {
+  orderItemTotal(): number {
     return this._price * this._quantity
   }
 }
