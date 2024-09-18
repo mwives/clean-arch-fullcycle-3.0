@@ -19,7 +19,7 @@ describe('Customer', () => {
   it('should activate customer', () => {
     const customer = new Customer('123', 'John Doe')
     const address = new Address('Main St', 123, '12345-678', 'São Paulo')
-    customer.Address = address
+    customer.changeAddress(address)
     customer.activate()
     expect(customer.isActive()).toBe(true)
   })

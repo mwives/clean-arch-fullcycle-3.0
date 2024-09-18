@@ -25,6 +25,10 @@ export class Customer {
     return this._rewardPoints
   }
 
+  get Address() {
+    return this._address
+  }
+
   // Entities should always self-validate
   validate() {
     if (!this._id) {
@@ -38,6 +42,10 @@ export class Customer {
   changeName(name: string) {
     this._name = name
     this.validate() // Guarantee that a customer always has a name
+  }
+
+  changeAddress(address: Address) {
+    this._address = address
   }
 
   addRewardPoints(points: number) {
@@ -58,9 +66,5 @@ export class Customer {
 
   deactivate() {
     this._active = false
-  }
-
-  set Address(address: Address) {
-    this._address = address
   }
 }
