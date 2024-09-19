@@ -1,11 +1,11 @@
 import { EventInterface } from '../event.interface'
 
 export class ProductCreatedEvent implements EventInterface {
-  dataTimeOccurrence: Date
+  occuredOn: Date
   eventData: any
 
   constructor(eventData: any) {
-    this.dataTimeOccurrence = new Date()
+    this.occuredOn = new Date()
     this.eventData = eventData
   }
 }
