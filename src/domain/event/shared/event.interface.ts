@@ -1,4 +1,4 @@
-export interface EventInterface {
+export interface EventInterface<T = any> {
   occuredOn: Date
-  eventData: any
+  eventData: T
 }
