@@ -7,6 +7,7 @@ import { SendConsoleLog2Handler } from '../event/shared/customer/handler/send-co
 import { EventDispatcher } from '../event/shared/event-dispatcher'
 import { EventDispatcherInterface } from '../event/shared/event-dispatcher.interface'
 import { CustomerService } from './customer.service'
+import { Address } from '../entity/address'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(),
@@ -20,6 +21,8 @@ describe('CustomerService', () => {
   beforeEach(() => {
     customerRepository = {
       create: jest.fn(),
+      findById: jest.fn(),
+      update: jest.fn(),
     } as unknown as CustomerRepository
     eventDispatcher = {
       notify: jest.fn(),
@@ -28,47 +31,70 @@ describe('CustomerService', () => {
     customerService = new CustomerService(customerRepository, eventDispatcher)
   })
 
-  it('should create a customer and dispatch an event', async () => {
-    const costumerId = 'uuid'
-    const costumerName = 'John Doe'
-    ;(uuid as jest.MockedFunction<typeof uuid>).mockReturnValue(costumerId)
-    jest.useFakeTimers().setSystemTime(new Date())
-    jest.spyOn(eventDispatcher, 'notify')
+  describe('create', () => {
+    it('should create a customer and dispatch an event', async () => {
+      const costumerId = 'uuid'
+      const costumerName = 'John Doe'
+      ;(uuid as jest.MockedFunction<typeof uuid>).mockReturnValue(costumerId)
+      jest.useFakeTimers().setSystemTime(new Date())
+      jest.spyOn(eventDispatcher, 'notify')
 
-    const result = await customerService.create(costumerName)
+      const result = await customerService.create(costumerName)
 
-    const expectedCustomer = new Customer(costumerId, costumerName)
-    expect(customerRepository.create).toHaveBeenCalledWith(expectedCustomer)
-    expect(eventDispatcher.notify).toHaveBeenCalledWith(
-      new CustomerCreatedEvent(expectedCustomer)
-    )
+      const expectedCustomer = new Customer(costumerId, costumerName)
+      expect(customerRepository.create).toHaveBeenCalledWith(expectedCustomer)
+      expect(eventDispatcher.notify).toHaveBeenCalledWith(
+        new CustomerCreatedEvent(expectedCustomer)
+      )
 
-    expect(result).toEqual(expectedCustomer)
+      expect(result).toEqual(expectedCustomer)
+    })
+
+    it('should call the handlers when the event is dispatched', async () => {
+      const costumerId = 'uuid'
+      const costumerName = 'John Doe'
+      ;(uuid as jest.MockedFunction<typeof uuid>).mockReturnValue(costumerId)
+      jest.useFakeTimers().setSystemTime(new Date())
+
+      const handler1 = new SendConsoleLog1Handler()
+      const handler2 = new SendConsoleLog2Handler()
+
+      jest.spyOn(handler1, 'handle').mockReturnValue()
+      jest.spyOn(handler2, 'handle').mockReturnValue()
+
+      const eventDispatcher = new EventDispatcher()
+      eventDispatcher.register('CustomerCreatedEvent', handler1)
+      eventDispatcher.register('CustomerCreatedEvent', handler2)
+      const customerService = new CustomerService(
+        customerRepository,
+        eventDispatcher
+      )
+
+      await customerService.create(costumerName)
+
+      expect(handler1.handle).toHaveBeenCalled()
+      expect(handler2.handle).toHaveBeenCalled()
+    })
   })
 
-  it('should call the handlers when the event is dispatched', async () => {
-    const costumerId = 'uuid'
-    const costumerName = 'John Doe'
-    ;(uuid as jest.MockedFunction<typeof uuid>).mockReturnValue(costumerId)
-    jest.useFakeTimers().setSystemTime(new Date())
+  describe('changeAddress', () => {
+    it('should change the address of the customer and call notify', async () => {
+      const customerId = '123'
+      const customer = new Customer(customerId, 'John Doe')
+      const newAddress = new Address('Street 1', 12345, '45678', 'Springfield')
+      ;(customerRepository.findById as jest.Mock).mockResolvedValue(customer)
+      ;(customerRepository.update as jest.Mock).mockResolvedValue(null)
 
-    const handler1 = new SendConsoleLog1Handler()
-    const handler2 = new SendConsoleLog2Handler()
+      jest.spyOn(eventDispatcher, 'notify')
 
-    jest.spyOn(handler1, 'handle').mockReturnValue()
-    jest.spyOn(handler2, 'handle').mockReturnValue()
+      const result = await customerService.changeAddress(customerId, newAddress)
 
-    const eventDispatcher = new EventDispatcher()
-    eventDispatcher.register('CustomerCreatedEvent', handler1)
-    eventDispatcher.register('CustomerCreatedEvent', handler2)
-    const customerService = new CustomerService(
-      customerRepository,
-      eventDispatcher
-    )
-
-    await customerService.create(costumerName)
-
-    expect(handler1.handle).toHaveBeenCalled()
-    expect(handler2.handle).toHaveBeenCalled()
+      expect(customerRepository.findById).toHaveBeenCalledWith(customerId)
+      expect(customerRepository.update).toHaveBeenCalledWith(customer)
+      expect(result).toEqual(customer)
+      expect(eventDispatcher.notify).toHaveBeenCalledWith(
+        new CustomerCreatedEvent(customer)
+      )
+    })
   })
 })
