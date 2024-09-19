@@ -1,13 +1,14 @@
 import { v4 as uuid } from 'uuid'
 import { CustomerRepository } from '../../infra/repository/customer.repository'
+import { Address } from '../entity/address'
 import { Customer } from '../entity/customer'
 import { CustomerCreatedEvent } from '../event/shared/customer/customer-created.event'
 import { SendConsoleLog1Handler } from '../event/shared/customer/handler/send-console-log-1-handler'
 import { SendConsoleLog2Handler } from '../event/shared/customer/handler/send-console-log-2-handler'
+import { SendConsoleLogHandler } from '../event/shared/customer/handler/send-console-log-handler'
 import { EventDispatcher } from '../event/shared/event-dispatcher'
 import { EventDispatcherInterface } from '../event/shared/event-dispatcher.interface'
 import { CustomerService } from './customer.service'
-import { Address } from '../entity/address'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(),
@@ -59,8 +60,8 @@ describe('CustomerService', () => {
       const handler1 = new SendConsoleLog1Handler()
       const handler2 = new SendConsoleLog2Handler()
 
-      jest.spyOn(handler1, 'handle').mockReturnValue()
-      jest.spyOn(handler2, 'handle').mockReturnValue()
+      jest.spyOn(handler1, 'handle')
+      jest.spyOn(handler2, 'handle')
 
       const eventDispatcher = new EventDispatcher()
       eventDispatcher.register('CustomerCreatedEvent', handler1)
@@ -78,7 +79,7 @@ describe('CustomerService', () => {
   })
 
   describe('changeAddress', () => {
-    it('should change the address of the customer and call notify', async () => {
+    it('should change the address of the customer and dispatch an event', async () => {
       const customerId = '123'
       const customer = new Customer(customerId, 'John Doe')
       const newAddress = new Address('Street 1', 12345, '45678', 'Springfield')
@@ -95,6 +96,29 @@ describe('CustomerService', () => {
       expect(eventDispatcher.notify).toHaveBeenCalledWith(
         new CustomerCreatedEvent(customer)
       )
+    })
+
+    it('should change the address of the customer and call the handlers', async () => {
+      const customerId = '123'
+      const customer = new Customer(customerId, 'John Doe')
+      const newAddress = new Address('Street 1', 12345, '45678', 'Springfield')
+      ;(customerRepository.findById as jest.Mock).mockResolvedValue(customer)
+      ;(customerRepository.update as jest.Mock).mockResolvedValue(null)
+
+      const handler = new SendConsoleLogHandler()
+
+      jest.spyOn(handler, 'handle')
+
+      const eventDispatcher = new EventDispatcher()
+      eventDispatcher.register('CustomerAddressChangedEvent', handler)
+      const customerService = new CustomerService(
+        customerRepository,
+        eventDispatcher
+      )
+
+      await customerService.changeAddress(customerId, newAddress)
+
+      expect(handler.handle).toHaveBeenCalled()
     })
   })
 })
