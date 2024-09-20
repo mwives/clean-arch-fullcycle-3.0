@@ -1,6 +1,6 @@
-import { EventDispatcherInterface } from './event-dispatcher.interface'
-import { EventHandlerInterface } from './event-handler.interface'
-import { EventInterface } from './event.interface'
+import { EventDispatcherInterface } from '@shared/event/event-dispatcher.interface'
+import { EventHandlerInterface } from '@shared/event/event-handler.interface'
+import { EventInterface } from '@shared/event/event.interface'
 
 export class EventDispatcher implements EventDispatcherInterface {
   private handlers: { [eventName: string]: EventHandlerInterface[] } = {}

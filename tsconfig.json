@@ -10,7 +10,14 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "strictNullChecks": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@shared/*": ["./src/domain/@shared/*"],
+      "@checkout/*": ["./src/domain/checkout/*"],
+      "@customer/*": ["./src/domain/customer/*"],
+      "@product/*": ["./src/domain/product/*"],
+      "@infra/*": ["./src/infra/*"]
+    }
   },
   "include": ["src/**/*.ts"]
 }

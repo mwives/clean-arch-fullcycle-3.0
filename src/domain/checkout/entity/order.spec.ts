@@ -1,5 +1,5 @@
-import { Order } from './order'
-import { OrderItem } from './order-item'
+import { Order } from '@checkout/entity/order'
+import { OrderItem } from '@checkout/entity/order-item'
 
 describe('Order', () => {
   it('should throw error when creating an order without ID', () => {

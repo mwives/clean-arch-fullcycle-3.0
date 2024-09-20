@@ -1,4 +1,4 @@
-import { EventInterface } from './event.interface'
+import { EventInterface } from '@shared/event/event.interface'
 
 export interface EventHandlerInterface<
   T extends EventInterface = EventInterface

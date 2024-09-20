@@ -1,10 +1,10 @@
+import { Customer } from '@customer/entity/customer'
+import { CustomerAddressChangedEvent } from '@customer/event/customer-address-changed.event'
+import { CustomerCreatedEvent } from '@customer/event/customer-created.event'
+import { Address } from '@customer/value-object/address'
+import { CustomerRepository } from '@infra/customer/repository/sequelize/customer.repository'
+import { EventDispatcherInterface } from '@shared/event/event-dispatcher.interface'
 import { v4 as uuid } from 'uuid'
-import { CustomerRepository } from '../../infra/repository/customer.repository'
-import { Address } from '../customer/value-object/address'
-import { Customer } from '../customer/entity/customer'
-import { CustomerAddressChangedEvent } from '../event/shared/customer/customer-address-changed.event'
-import { CustomerCreatedEvent } from '../event/shared/customer/customer-created.event'
-import { EventDispatcherInterface } from '../event/shared/event-dispatcher.interface'
 
 export class CustomerService {
   constructor(

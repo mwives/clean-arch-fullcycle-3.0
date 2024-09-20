@@ -1,3 +1,5 @@
+import { CustomerModel } from '@infra/customer/repository/sequelize/customer.model'
+import { OrderItemModel } from '@infra/order/repository/sequelize/order-item.model'
 import {
   BelongsTo,
   Column,
@@ -7,8 +9,6 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript'
-import { CustomerModel } from './customer.model'
-import { OrderItemModel } from './order-item.model'
 
 @Table({
   tableName: 'orders',

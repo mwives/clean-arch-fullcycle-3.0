@@ -1,5 +1,5 @@
-import { EventHandlerInterface } from '../../event-handler.interface'
-import { CustomerCreatedEvent } from '../customer-created.event'
+import { EventHandlerInterface } from '@shared/event/event-handler.interface'
+import { CustomerCreatedEvent } from '@customer/event/customer-created.event'
 
 export class SendConsoleLog2Handler implements EventHandlerInterface {
   handle(event: CustomerCreatedEvent): void {

@@ -1,5 +1,5 @@
-import { EventHandlerInterface } from './event-handler.interface'
-import { EventInterface } from './event.interface'
+import { EventHandlerInterface } from '@shared/event/event-handler.interface'
+import { EventInterface } from '@shared/event/event.interface'
 
 export interface EventDispatcherInterface {
   register(event: string, handler: EventHandlerInterface): void

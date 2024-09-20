@@ -1,6 +1,6 @@
-import { EventDispatcher } from './event-dispatcher'
-import { ProductCreatedEvent } from '../../product/event/product-created.event'
-import { SendEmailWhenProductIsCreatedHandler } from '../../product/event/handler/send-email-when-product-is-created.handler'
+import { SendEmailWhenProductIsCreatedHandler } from '@product/event/handler/send-email-when-product-is-created.handler'
+import { ProductCreatedEvent } from '@product/event/product-created.event'
+import { EventDispatcher } from '@shared/event/event-dispatcher'
 
 describe('EventDispatcher', () => {
   it('should register event handler', () => {

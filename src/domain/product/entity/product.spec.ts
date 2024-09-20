@@ -1,4 +1,4 @@
-import { Product } from './product'
+import { Product } from '@product/entity/product'
 
 describe('Product', () => {
   it('should throw error when creating a product without ID', () => {
