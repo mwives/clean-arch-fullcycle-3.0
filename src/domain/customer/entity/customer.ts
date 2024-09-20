@@ -21,6 +21,10 @@ export class Customer {
     return this._name
   }
 
+  get address() {
+    return this._address
+  }
+
   get rewardPoints() {
     return this._rewardPoints
   }
