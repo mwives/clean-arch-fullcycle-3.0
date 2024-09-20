@@ -1,4 +1,4 @@
-import { Customer } from '../../../../entity/customer'
+import { Customer } from '../../../../customer/entity/customer'
 import { EventHandlerInterface } from '../../event-handler.interface'
 import { EventInterface } from '../../event.interface'
 
