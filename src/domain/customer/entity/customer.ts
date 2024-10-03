@@ -29,10 +29,6 @@ export class Customer {
     return this._rewardPoints
   }
 
-  get Address() {
-    return this._address
-  }
-
   // Entities should always self-validate
   validate() {
     if (!this._id) {
