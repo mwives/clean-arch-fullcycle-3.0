@@ -6,7 +6,7 @@ export class SendConsoleLogHandler implements EventHandlerInterface {
   handle(event: EventInterface<Customer>): void {
     console.log(
       `Client address: ${event.eventData.id}, 
-      ${event.eventData.name} changed to: ${event.eventData.Address.toString()}`
+      ${event.eventData.name} changed to: ${event.eventData.address.toString()}`
     )
   }
 }
