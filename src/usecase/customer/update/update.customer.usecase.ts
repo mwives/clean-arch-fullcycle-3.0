@@ -1,12 +1,14 @@
+import { CustomerRepositoryInterface } from '@customer/repository/customer-repository.interface'
 import { Address } from '@customer/value-object/address'
-import { CustomerRepository } from '@infra/customer/repository/sequelize/customer.repository'
 import {
   InputUpdateCustomerDto,
   OutputUpdateCustomerDto,
 } from './update.customer.dto'
 
 export class UpdateCustomerUseCase {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(
+    private readonly customerRepository: CustomerRepositoryInterface
+  ) {}
 
   async execute(
     input: InputUpdateCustomerDto
