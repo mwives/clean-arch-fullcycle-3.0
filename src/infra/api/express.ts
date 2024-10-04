@@ -1,10 +1,13 @@
-import { CustomerModel } from '@infra/customer/repository/sequelize/customer.model'
 import express from 'express'
 import { Sequelize } from 'sequelize-typescript'
+
+import { customerRouter } from '@infra/api/routes/customer.route'
+import { CustomerModel } from '@infra/customer/repository/sequelize/customer.model'
 
 export const app = express()
 
 app.use(express.json())
+app.use('/customers', customerRouter)
 
 export let sequelize: Sequelize
 
