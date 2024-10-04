@@ -1,8 +1,8 @@
 import express from 'express'
 
 import { CustomerRepository } from '@infra/customer/repository/sequelize/customer.repository'
-import { CreateCustomerUseCase } from '@usecase/customer/create/create.customer.usecase'
 import { InputCreateCustomerDto } from '@usecase/customer/create/create.customer.dto'
+import { CreateCustomerUseCase } from '@usecase/customer/create/create.customer.usecase'
 import { ListCustomerUseCase } from '@usecase/customer/list/list.customer.usecase'
 
 export const customerRouter = express.Router()
