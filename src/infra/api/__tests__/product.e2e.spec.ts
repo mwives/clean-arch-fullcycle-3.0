@@ -2,6 +2,15 @@ import { app, sequelize } from '@infra/api/express'
 import request from 'supertest'
 
 describe('Product E2E', () => {
+  const productData = {
+    name: 'any_name',
+    price: 10,
+  }
+
+  const createProduct = async (data = productData) => {
+    return request(app).post('/products').send(data)
+  }
+
   beforeEach(async () => {
     await sequelize.sync({ force: true })
   })
@@ -12,10 +21,7 @@ describe('Product E2E', () => {
 
   describe('POST /products', () => {
     it('should create a product', async () => {
-      const response = await request(app).post('/products').send({
-        name: 'any_name',
-        price: 10,
-      })
+      const response = await createProduct()
 
       expect(response.status).toBe(201)
       expect(response.body).toEqual({
@@ -26,10 +32,7 @@ describe('Product E2E', () => {
     })
 
     it('should not create a product with invalid data', async () => {
-      const response = await request(app).post('/products').send({
-        name: 'any_name',
-        price: null,
-      })
+      const response = await createProduct({ ...productData, price: null })
 
       expect(response.status).toBe(500)
     })
