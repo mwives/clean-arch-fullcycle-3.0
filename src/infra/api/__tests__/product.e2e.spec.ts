@@ -37,4 +37,22 @@ describe('Product E2E', () => {
       expect(response.status).toBe(500)
     })
   })
+
+  describe('GET /products', () => {
+    it('should list all products', async () => {
+      const productData1 = { ...productData, name: 'any_name1' }
+      const productData2 = { ...productData, name: 'any_name2' }
+
+      const createResponse1 = await createProduct(productData1)
+      const createResponse2 = await createProduct(productData2)
+
+      expect(createResponse1.status).toBe(201)
+      expect(createResponse2.status).toBe(201)
+
+      const response = await request(app).get('/products')
+
+      expect(response.status).toBe(200)
+      expect(response.body.products.length).toBe(2)
+    })
+  })
 })
