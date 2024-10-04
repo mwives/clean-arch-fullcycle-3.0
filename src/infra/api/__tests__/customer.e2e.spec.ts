@@ -35,4 +35,10 @@ describe('Customer E2E', () => {
       },
     })
   })
+
+  it('should not create a customer with invalid data', async () => {
+    const response = await request(app).post('/customers').send({})
+
+    expect(response.status).toBe(500)
+  })
 })
