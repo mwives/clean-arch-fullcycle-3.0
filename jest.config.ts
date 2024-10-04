@@ -13,6 +13,7 @@ const config: Config = {
     '^@customer/(.*)$': '<rootDir>/src/domain/customer/$1',
     '^@product/(.*)$': '<rootDir>/src/domain/product/$1',
     '^@infra/(.*)$': '<rootDir>/src/infra/$1',
+    '^@usecase/(.*)$': '<rootDir>/src/usecase/$1',
   },
 }
 

@@ -16,7 +16,8 @@
       "@checkout/*": ["./src/domain/checkout/*"],
       "@customer/*": ["./src/domain/customer/*"],
       "@product/*": ["./src/domain/product/*"],
-      "@infra/*": ["./src/infra/*"]
+      "@infra/*": ["./src/infra/*"],
+      "@usecase/*": ["./src/usecase/*"]
     }
   },
   "include": ["src/**/*.ts"]
