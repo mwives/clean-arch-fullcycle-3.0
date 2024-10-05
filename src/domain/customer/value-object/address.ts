@@ -1,3 +1,5 @@
+import { AddressValidatorFactory } from '@customer/factory/address.validator.factory'
+
 // Address is a value object
 export class Address {
   // VOs don't have ID
@@ -32,18 +34,7 @@ export class Address {
   }
 
   validate() {
-    if (!this._street) {
-      throw new Error('Street is required')
-    }
-    if (!this._number) {
-      throw new Error('Number is required')
-    }
-    if (!this._zip) {
-      throw new Error('Zip is required')
-    }
-    if (!this._city) {
-      throw new Error('City is required')
-    }
+    AddressValidatorFactory.create().validate(this)
   }
 
   toString() {
