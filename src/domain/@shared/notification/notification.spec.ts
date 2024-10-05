@@ -57,4 +57,25 @@ describe('Notification', () => {
       'customer: error message, order: error message 2'
     )
   })
+
+  it('should check if there are errors', () => {
+    expect(notification.hasErrors()).toBe(false)
+
+    notification.addError({
+      message: 'error message',
+      context: 'customer',
+    })
+
+    expect(notification.hasErrors()).toBe(true)
+  })
+
+  it('should get all errors props', () => {
+    const error = {
+      message: 'error message',
+      context: 'customer',
+    }
+    notification.addError(error)
+
+    expect(notification.errors).toEqual([error])
+  })
 })
