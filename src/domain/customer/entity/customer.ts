@@ -1,3 +1,4 @@
+import { CustomerValidatorFactory } from '@customer/factory/customer.validator.factory'
 import { Address } from '@customer/value-object/address'
 import { Entity } from '@shared/entity/entity.abstract'
 import { NotificationError } from '@shared/notification/notification.error'
@@ -33,18 +34,7 @@ export class Customer extends Entity {
 
   // Entities should always self-validate
   validate() {
-    if (!this.id) {
-      this.notification.addError({
-        context: 'customer',
-        message: 'ID is required',
-      })
-    }
-    if (!this._name) {
-      this.notification.addError({
-        context: 'customer',
-        message: 'Name is required',
-      })
-    }
+    CustomerValidatorFactory.create().validate(this)
   }
 
   changeName(name: string) {
