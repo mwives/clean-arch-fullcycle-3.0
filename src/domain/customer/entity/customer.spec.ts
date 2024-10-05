@@ -25,10 +25,34 @@ describe('Customer', () => {
     }
   })
 
+  it('should throw NotificationError when both ID and name are missing', () => {
+    try {
+      new Customer('', '')
+    } catch (error) {
+      expect(error).toBeInstanceOf(NotificationError)
+      expect((error as NotificationError).message).toBe(
+        'customer: ID is required, customer: Name is required'
+      )
+    }
+  })
+
   it('should change name', () => {
     const customer = new Customer('123', 'John Doe')
     customer.changeName('Jane Doe')
     expect(customer.name).toBe('Jane Doe')
+  })
+
+  it('should throw NotificationError when changing name to empty', () => {
+    const customer = new Customer('123', 'John Doe')
+
+    try {
+      customer.changeName('')
+    } catch (error) {
+      expect(error).toBeInstanceOf(NotificationError)
+      expect((error as NotificationError).message).toBe(
+        'customer: Name is required'
+      )
+    }
   })
 
   it('should activate customer', () => {
