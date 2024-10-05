@@ -65,5 +65,28 @@ describe('Customer E2E', () => {
       expect(customer2.name).toBe(customerData2.name)
       expect(customer2.address.street).toBe(customerData2.address.street)
     })
+
+    it('should list all customers with xml format', async () => {
+      const customerData1 = { ...customerData, name: 'any_name1' }
+      const customerData2 = { ...customerData, name: 'any_name2' }
+
+      const createResponse1 = await createCustomer(customerData1)
+      const createResponse2 = await createCustomer(customerData2)
+
+      expect(createResponse1.status).toBe(201)
+      expect(createResponse2.status).toBe(201)
+
+      const response = await request(app)
+        .get('/customers')
+        .set('Accept', 'application/xml')
+
+      expect(response.status).toBe(200)
+      expect(response.text).toContain('<?xml version="1.0" encoding="UTF-8"?>')
+      expect(response.text).toContain('<customers>')
+      expect(response.text).toContain('</customers>')
+      expect(response.text).toContain('<name>any_name1</name>')
+      expect(response.text).toContain('<name>any_name2</name>')
+      expect(response.text).toContain('<street>any_street</street>')
+    })
   })
 })

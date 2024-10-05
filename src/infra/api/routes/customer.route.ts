@@ -4,6 +4,7 @@ import { CustomerRepository } from '@infra/customer/repository/sequelize/custome
 import { InputCreateCustomerDto } from '@usecase/customer/create/create.customer.dto'
 import { CreateCustomerUseCase } from '@usecase/customer/create/create.customer.usecase'
 import { ListCustomerUseCase } from '@usecase/customer/list/list.customer.usecase'
+import { CustomerPresenter } from '../presenter/customer.presenter'
 
 export const customerRouter = express.Router()
 
@@ -35,7 +36,10 @@ customerRouter.get('/', async (req, res) => {
 
     const customers = await useCase.execute({})
 
-    res.status(200).json(customers)
+    res.format({
+      json: () => res.status(200).json(customers),
+      xml: () => res.send(CustomerPresenter.listXml(customers)),
+    })
   } catch (err) {
     res.status(500).send('Internal server error')
   }
