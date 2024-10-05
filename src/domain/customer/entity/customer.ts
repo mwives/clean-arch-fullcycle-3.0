@@ -1,20 +1,22 @@
 import { Address } from '@customer/value-object/address'
+import { Entity } from '@shared/entity/entity.abstract'
+import { NotificationError } from '@shared/notification/notification.error'
 
-export class Customer {
-  private _id: string
+export class Customer extends Entity {
   private _name: string
   private _address!: Address
   private _rewardPoints = 0
   private _active = false
 
   constructor(id: string, name: string) {
+    super()
     this._id = id
     this._name = name
     this.validate()
-  }
 
-  get id() {
-    return this._id
+    if (this.notification.hasErrors()) {
+      throw new NotificationError(this.notification.errors)
+    }
   }
 
   get name() {
@@ -31,11 +33,17 @@ export class Customer {
 
   // Entities should always self-validate
   validate() {
-    if (!this._id) {
-      throw new Error('ID is required')
+    if (!this.id) {
+      this.notification.addError({
+        context: 'customer',
+        message: 'ID is required',
+      })
     }
     if (!this._name) {
-      throw new Error('Name is required')
+      this.notification.addError({
+        context: 'customer',
+        message: 'Name is required',
+      })
     }
   }
 

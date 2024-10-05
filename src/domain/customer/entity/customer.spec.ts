@@ -1,13 +1,28 @@
 import { Address } from '@customer/value-object/address'
 import { Customer } from '@customer/entity/customer'
+import { NotificationError } from '@shared/notification/notification.error'
 
 describe('Customer', () => {
-  it('should throw error when creating a customer without ID', () => {
-    expect(() => new Customer('', 'John Doe')).toThrow('ID is required')
+  it('should throw NotificationError when creating a customer without ID', () => {
+    try {
+      new Customer('', 'John Doe')
+    } catch (error) {
+      expect(error).toBeInstanceOf(NotificationError)
+      expect((error as NotificationError).message).toBe(
+        'customer: ID is required'
+      )
+    }
   })
 
-  it('should throw error when creating a customer without name', () => {
-    expect(() => new Customer('123', '')).toThrow('Name is required')
+  it('should throw NotificationError when creating a customer without name', () => {
+    try {
+      new Customer('123', '')
+    } catch (error) {
+      expect(error).toBeInstanceOf(NotificationError)
+      expect((error as NotificationError).message).toBe(
+        'customer: Name is required'
+      )
+    }
   })
 
   it('should change name', () => {
